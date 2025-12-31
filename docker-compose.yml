@@ -1,0 +1,36 @@
+version: '3.8'
+services:
+  app:
+    build: .
+    container_name: api-report
+    ports:
+      - "8000:8000"
+    volumes:
+      - .:/var/www
+    env_file:
+      - .env
+    depends_on:
+      - db
+    networks:
+      - laravel
+  db:
+    image: mysql:8.0
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: app_report
+      MYSQL_USER: user
+      MYSQL_PASSWORD: 123456
+    volumes:
+      - dbdata:/var/lib/mysql
+    ports:
+      - "3306:3306"
+    networks:
+      - laravel
+
+networks:
+  laravel:
+    driver: bridge
+
+volumes:
+  dbdata:
+    driver: local
