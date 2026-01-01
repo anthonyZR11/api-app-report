@@ -7,8 +7,18 @@ services:
       - "8000:8000"
     volumes:
       - .:/var/www
+      - /var/www/vendor
     env_file:
       - .env
+    depends_on:
+      - db
+    networks:
+      - laravel
+  queue-worker:
+    build: .
+    container_name: api-report-queue
+    command: php artisan queue:work --sleep=3 --tries=3 --max-time=3600
+    restart: unless-stopped
     depends_on:
       - db
     networks:
