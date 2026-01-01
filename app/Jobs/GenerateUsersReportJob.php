@@ -7,6 +7,7 @@ use App\Models\Report;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Queue\Queueable;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Storage;
 use Maatwebsite\Excel\Facades\Excel;
 
 class GenerateUsersReportJob implements ShouldQueue
@@ -36,6 +37,19 @@ class GenerateUsersReportJob implements ShouldQueue
         $filename,
         'public'
       );
+
+       // Verifica que el archivo existe
+      if (!Storage::disk('public')->exists($filename)) {
+        throw new \Exception("El archivo no se generó correctamente: {$filename}");
+      }
+
+      // Log para debug
+      Log::info('Reporte generado exitosamente', [
+        'reportId' => $this->reportId,
+        'filename' => $filename,
+        'path' => Storage::disk('public')->path($filename),
+        'size' => Storage::disk('public')->size($filename),
+      ]);
 
       $report->update([
         'report_link' => $filename,
