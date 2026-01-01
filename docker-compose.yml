@@ -20,6 +20,10 @@ services:
     container_name: api-report-queue
     command: php artisan queue:work --sleep=3 --tries=3 --max-time=3600
     restart: unless-stopped
+    volumes:
+      - app-storage:/var/www/storage
+      - .:/var/www
+      - /var/www/vendor
     depends_on:
       - db
     networks:
@@ -44,4 +48,6 @@ networks:
 
 volumes:
   dbdata:
+    driver: local
+  app-storage:
     driver: local
