@@ -1,7 +1,10 @@
 version: '3.8'
+
 services:
   app:
-    build: .
+    build:
+      context: .
+      dockerfile: Dockerfile
     container_name: api-report
     ports:
       - "8000:8000"
@@ -15,21 +18,30 @@ services:
       - db
     networks:
       - laravel
+    command: php artisan serve --host=0.0.0.0 --port=8000
+
   queue-worker:
-    build: .
+    build:
+      context: .
+      dockerfile: Dockerfile
     container_name: api-report-queue
-    command: php artisan queue:work --sleep=3 --tries=3 --max-time=3600
-    restart: unless-stopped
     volumes:
-      - app-storage:/var/www/storage
       - .:/var/www
       - /var/www/vendor
+      - app-storage:/var/www/storage
+    env_file:
+      - .env
     depends_on:
       - db
+      - app
     networks:
       - laravel
+    command: php artisan queue:work --sleep=3 --tries=3 --max-time=3600
+    restart: unless-stopped
+
   db:
     image: mysql:8.0-oraclelinux8
+    container_name: api-report-db
     environment:
       MYSQL_ROOT_PASSWORD: root
       MYSQL_DATABASE: app_report
