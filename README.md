@@ -67,6 +67,12 @@ docker-compose up -d --build
     ```
     *(Nota: Debes estar dentro del contenedor o usar)*
 
+     **Ejecutar el job en local**
+    ```bash
+    php artisan queue:work
+    ```
+
+
 ---
 
 ## 🔒 Seguridad Integrada
