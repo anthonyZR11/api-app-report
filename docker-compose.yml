@@ -24,7 +24,7 @@ services:
     networks:
       - laravel
   db:
-    image: mysql:8.0
+    image: mysql:8.0-alpine
     environment:
       MYSQL_ROOT_PASSWORD: root
       MYSQL_DATABASE: app_report
